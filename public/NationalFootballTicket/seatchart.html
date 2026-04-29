@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seating Chart</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* styles.css */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 20px;
+        }
+
+        .selection-form {
+            flex: 1 1 50%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .seating-chart {
+            flex: 1 1 50%;
+        }
+
+        .selection-form form {
+            display: inline;
+            flex-direction: column;
+        }
+
+        .selection-form label {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .selection-form select,
+        .selection-form input[type="checkbox"] {
+            margin-bottom: 20px;
+        }
+
+        .acknowledge {
+            display: flex;
+            align-items: center;
+        }
+
+        .acknowledge label {
+            margin-left: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            border: none;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        .seating-chart path {
+            fill: #ccc;
+            stroke: black;
+            stroke-width: 2px;
+        }
+
+        .seat-number {
+            font-size: 12px;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            fill: black;
+        }
+
+        #seat-display {
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .seating-chart,
+            .selection-form {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="seating-chart">
+            <svg id="stadium-map" viewBox="0 0 500 500">
+                <g id="gate-A" fill="#ccc">
+                    <path id="gate-A-level-1" d="M50,50 h100 v30 h-100 Z"></path>
+                    <path id="gate-A-level-2" d="M50,80 h100 v30 h-100 Z"></path>
+                    <path id="gate-A-level-3" d="M50,110 h100 v30 h-100 Z"></path>
+                    <text x="90" y="140" font-size="20" fill="#000">A</text>
+                </g>
+                <g id="gate-B" fill="#ccc">
+                    <path id="gate-B-level-1" d="M200,50 h100 v30 h-100 Z"></path>
+                    <path id="gate-B-level-2" d="M200,80 h100 v30 h-100 Z"></path>
+                    <path id="gate-B-level-3" d="M200,110 h100 v30 h-100 Z"></path>
+                    <text x="240" y="140" font-size="20" fill="#000">B</text>
+                </g>
+                <g id="gate-C" fill="#ccc">
+                    <path id="gate-C-level-1" d="M350,50 h100 v30 h-100 Z"></path>
+                    <path id="gate-C-level-2" d="M350,80 h100 v30 h-100 Z"></path>
+                    <path id="gate-C-level-3" d="M350,110 h100 v30 h-100 Z"></path>
+                    <text x="390" y="140" font-size="20" fill="#000">C</text>
+                </g>
+                <g id="gate-D" fill="#ccc">
+                    <path id="gate-D-level-1" d="M50,200 h100 v30 h-100 Z"></path>
+                    <path id="gate-D-level-2" d="M50,230 h100 v30 h-100 Z"></path>
+                    <path id="gate-D-level-3" d="M50,260 h100 v30 h-100 Z"></path>
+                    <text x="90" y="290" font-size="20" fill="#000">D</text>
+                </g>
+                <g id="gate-E" fill="#ccc">
+                    <path id="gate-E-level-1" d="M200,200 h100 v30 h-100 Z"></path>
+                    <path id="gate-E-level-2" d="M200,230 h100 v30 h-100 Z"></path>
+                    <path id="gate-E-level-3" d="M200,260 h100 v30 h-100 Z"></path>
+                    <text x="240" y="290" font-size="20" fill="#000">E</text>
+                </g>
+            </svg>
+        </div>
+        <div class="selection-form">
+            <form>
+                <label for="gate">Gate</label>
+                <select id="gate" name="gate">
+                    <option value="">Please select gate</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                </select>
+
+                <label for="type">Type</label>
+                <select id="type" name="type">
+                    <option value="">Please select type</option>
+                </select>
+
+                <label for="level">Level</label>
+                <select id="level" name="level">
+                    <option value="">Please select Level</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+
+                <label for="section">Seat section</label>
+                <select id="section" name="section">
+                    <option value="">Please select section</option>
+                </select>
+
+                <div class="acknowledge">
+                    <input type="checkbox" id="acknowledge" name="acknowledge">
+                    <label for="acknowledge">I acknowledge that if the seat at the section I selected is not available,
+                        I may be assigned a different seat at another section.</label>
+                </div>
+
+                <button type="submit">Continue</button>
+                <button type="button">Cancel</button>
+            </form>
+
+            <!-- Seating display -->
+            <div id="seat-display"></div>
+        </div>
+    </div>
+
+    <script>
+        const gateTypeMap = {
+            A: ['Premium', 'Grandstand', 'Home'],
+            B: ['Ultras Malaya', 'Home'],
+            C: ['Home'],
+            D: ['Home', 'Away'],
+            E: ['Premium', 'Grandstand', 'Home']
+        };
+
+        const seatingMap = {
+            A: { 1: 10, 2: 8, 3: 6 },
+            B: { 1: 12, 2: 10, 3: 8 },
+            C: { 1: 10, 2: 10, 3: 10 },
+            D: { 1: 8, 2: 10, 3: 12 },
+            E: { 1: 15, 2: 10, 3: 8 }
+        };
+
+        document.getElementById('gate').addEventListener('change', function () {
+            const selectedGate = this.value;
+
+            // Reset all gates to default color
+            document.querySelectorAll('g[id^="gate-"]').forEach(function (gate) {
+                gate.querySelectorAll('path').forEach(path => {
+                    path.setAttribute('fill', '#ccc'); // reset color
+                });
+            });
+
+            // Highlight the selected gate
+            if (selectedGate) {
+                document.getElementById(`gate-${selectedGate}`).querySelectorAll('path').forEach(path => {
+                    path.setAttribute('fill', 'yellow'); // highlight color
+                });
+            }
+
+            // Update the "Type" dropdown based on the selected gate
+            const typeSelect = document.getElementById('type');
+            typeSelect.innerHTML = ''; // Clear the current options
+
+            if (gateTypeMap[selectedGate]) {
+                gateTypeMap[selectedGate].forEach(function (type) {
+                    const option = document.createElement('option');
+                    option.value = type;
+                    option.textContent = type;
+                    typeSelect.appendChild(option);
+                });
+            }
+
+            // Reset level and section selections
+            document.getElementById('level').value = "";
+            document.getElementById('section').value = "";
+            document.getElementById('seat-display').innerHTML = ""; // Reset seat display
+        });
+
+        document.getElementById('level').addEventListener('change', function () {
+            const selectedGate = document.getElementById('gate').value;
+            const selectedLevel = this.value;
+
+            if (selectedGate && selectedLevel) {
+                // Reset all levels in the gate to default color
+                document.querySelectorAll(`g[id="gate-${selectedGate}"] path`).forEach(function (level) {
+                    level.setAttribute('fill', '#ccc'); // reset color
+                });
+
+                // Highlight the selected gate and level
+                const selectedGateLevel = document.getElementById(`gate-${selectedGate}-level-${selectedLevel}`);
+                if (selectedGateLevel) {
+                    selectedGateLevel.setAttribute('fill', 'orange'); // highlight color
+                }
+
+                // Show seating chart below the selection
+                const seatCount = seatingMap[selectedGate][selectedLevel];
+                const seatDisplay = document.getElementById('seat-display');
+                seatDisplay.innerHTML = ''; // Clear previous seats
+
+                for (let i = 1; i <= seatCount; i++) {
+                    const seat = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    seat.setAttribute('width', '30');
+                    seat.setAttribute('height', '30');
+                    seat.style.margin = '5px';
+
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', '15');
+                    circle.setAttribute('cy', '15');
+                    circle.setAttribute('r', '12');
+                    circle.setAttribute('fill', '#ccc');
+                    seat.appendChild(circle);
+
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', '15');
+                    text.setAttribute('y', '19');
+                    text.setAttribute('class', 'seat-number');
+                    text.textContent = i;
+                    seat.appendChild(text);
+
+                    seatDisplay.appendChild(seat);
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
