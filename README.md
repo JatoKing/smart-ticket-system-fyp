@@ -1,70 +1,199 @@
-<<<<<<< HEAD
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Smart Ticket System — National Football Match Ticketing
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Final Year Project (FYP): a web-based system for booking tickets to Malaysian national football team matches at **Bukit Jalil National Stadium**. Customers choose their gate, category, level, section and seats directly on an interactive stadium map, make a payment, and receive an e-ticket with a QR code.
 
-## About Laravel
+The system is built with **Laravel 10** and has two user roles: **Admin** and **Customer**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Background & Objectives
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+National team match tickets are often sold at counters or through systems that don't clearly show where a seat is located in the stadium. This project addresses that by:
 
-## Learning Laravel
+1. Providing an online platform to view the match schedule and book tickets.
+2. Displaying an **interactive SVG map of Bukit Jalil Stadium** that highlights the selected gate and section, so users can see exactly where their seats are.
+3. Calculating ticket prices automatically based on seat category.
+4. Generating an **e-ticket with a QR code** that can be downloaded as a PDF.
+5. Providing an admin panel to manage matches, ticket prices and users.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Main Features
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Customer
+| Feature | Description |
+|---|---|
+| Register & Login | New accounts are registered with the `customer` role automatically. |
+| Match Fixtures | List of matches (teams, date, time, venue). |
+| Seat Selection | Choose **Gate (A–E) → Category → Level → Section → Seat**. The selected section is highlighted on the stadium map. |
+| Price Calculation | The total price updates live based on the number of seats and the category. |
+| Booking Review | Review the selected tickets, delete the selection, or proceed to payment. |
+| Payment | Enter bank, full name, IC number and address. |
+| E-Ticket | Ticket details with a **QR code** and a **Download PDF** button. |
+| Order History | List of past bookings with links to their e-tickets. |
 
-## Laravel Sponsors
+### Admin
+| Feature | Description |
+|---|---|
+| Dashboard | Total users, total matches, and a chart of user registrations over the last 12 months (Chart.js). |
+| Manage Matches | Create, view, update and delete matches (CRUD). |
+| Manage Tickets & Prices | Set the price and quantity for 5 ticket categories per match. |
+| User List | View all registered users. |
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Ticket Categories & Prices
+| Category | Price | Gate |
+|---|---|---|
+| Premium | RM70 | A, E (Level 2) |
+| Grandstand | RM50 | A, E (Level 1) |
+| Home | RM30 | A, B, C, D, E |
+| Ultras Malaya | RM30 | B (Level 1) |
+| Away | RM30 | E (Level 3) |
 
-### Premium Partners
+The gate → category → level → section mapping is defined in the `gateTypeMap` object in [resources/views/customer/create.blade.php](resources/views/customer/create.blade.php).
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+---
 
-## Contributing
+## System Flow
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```
+Customer
+  Login ─► Dashboard ─► Match Fixtures ─► Choose Gate/Category/Level/Section
+     ─► Choose Seats (price calculated) ─► Book Tickets ─► Review Booking
+     ─► Payment ─► E-Ticket (QR + PDF) ─► Order History
 
-## Code of Conduct
+Admin
+  Login ─► Admin Dashboard ─► Manage Matches ─► Set Tickets & Prices
+                          └─► User List
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+After login, users are redirected by role (`admin` → `/admin/dashboard`, `customer` → `/customer/dashboard`). Access to each route is enforced by the `check.role` middleware ([app/Http/Middleware/CheckRole.php](app/Http/Middleware/CheckRole.php)).
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Tech Stack
 
-## License
+| Layer | Technology |
+|---|---|
+| Backend | PHP 8.1+, Laravel 10, Laravel UI (auth) |
+| Database | MySQL |
+| Customer Frontend | Blade, Bootstrap, *NationalFootballTicket* template ([public/NationalFootballTicket/](public/NationalFootballTicket/)) |
+| Admin Frontend | Blade, AdminLTE 3 ([public/admin/](public/admin/)), Chart.js |
+| Stadium Map | Interactive SVG + JavaScript |
+| E-Ticket | QR Server API (QR code), jsPDF (PDF download) |
+| Build tool | Vite |
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-=======
-# smart-ticket-system-fyp
->>>>>>> f4391bb4064e35cf5520e96e0e51a174c905ccee
+---
+
+## Database Structure
+
+```
+users ──┬──< bookticket >── footballmatches ──< tickets
+        │        │
+        │        └──< payment
+```
+
+| Table | Purpose | Key fields |
+|---|---|---|
+| `users` | User accounts | `name`, `email`, `password`, `role` (`admin`/`customer`), `phone_number`, `address` |
+| `footballmatches` | Matches | `teams`, `date`, `time`, `location` |
+| `tickets` | Ticket price & quantity per match | `match_id`, `type`, `price`, `quantity` |
+| `bookticket` | Customer seat bookings | `user_id`, `match_id`, `gate`, `type`, `level`, `section`, `seat`, `totalPrice` |
+| `payment` | Payment records | `bookticket_id`, `fname`, `identification` |
+
+---
+
+## Project Structure (key files)
+
+```
+app/
+├── Http/Controllers/
+│   ├── AdminController.php         # Admin dashboard + statistics
+│   ├── MatchController.php         # Match CRUD
+│   ├── TicketController.php        # Ticket prices & quantities
+│   ├── UserController.php          # User list
+│   ├── CustomerController.php      # Customer dashboard
+│   ├── BookTicketController.php    # Seat selection & booking
+│   ├── PaymentController.php       # Payment & e-ticket
+│   ├── OrderHistoryController.php  # Order history
+│   └── Auth/LoginController.php    # Role-based redirect
+├── Http/Middleware/CheckRole.php   # Admin/customer access control
+└── Models/                         # User, FootballMatch, Ticket, BookTicket, Payment
+
+database/
+├── migrations/                     # Table schemas
+└── seeders/                        # Sample data (users & matches)
+
+resources/views/
+├── admin/, matches/, tickets/      # Admin pages (AdminLTE)
+├── customer/                       # Customer pages (create.blade.php = stadium map)
+├── payment/                        # Payment form & e-ticket
+└── order/history.blade.php         # Order history
+
+routes/web.php                      # All web routes
+```
+
+---
+
+## Installation & Setup
+
+**Requirements:** PHP 8.1+, Composer, Node.js & npm, MySQL.
+
+```bash
+# 1. Clone the repository
+git clone <repo-url> smart-ticket-system-fyp
+cd smart-ticket-system-fyp
+
+# 2. Install dependencies
+composer install
+npm install
+
+# 3. Set up the .env file
+cp .env.example .env
+php artisan key:generate
+```
+
+Update the database settings in `.env`:
+
+```env
+DB_DATABASE=smart_ticket
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+```bash
+# 4. Create tables & seed sample data
+php artisan migrate --seed
+
+# 5. Run the application
+npm run dev          # terminal 1
+php artisan serve    # terminal 2
+```
+
+Open `http://localhost:8000` in your browser.
+
+### Sample Accounts (from seeder)
+| Role | Email | Password |
+|---|---|---|
+| Admin | `admin@gmail.com` | `password` |
+| Customer | `izzat@gmail.com` | `password` |
+
+The seeder also adds two sample matches: **Malaysia vs Indonesia** and **Malaysia vs Korea Republic** at Bukit Jalil Stadium.
+
+---
+
+## Limitations & Future Improvements
+
+- **Payment is simulated**: there is no integration with a real payment gateway (e.g. FPX, ToyyibPay, Billplz).
+- **Booked seats are not locked**: other customers can still select the same seat. Suggested fix: check the `bookticket` table and mark taken seats as *reserved* on the map.
+- **Ticket quantity is not deducted** after a booking is made.
+- QR codes are generated through an external API (`api.qrserver.com`), so an internet connection is required.
+- The migration `2025_02_08_070341_add_user_id_to_payments_table.php` refers to a `payments` table, but the actual table is named `payment`. If `php artisan migrate` fails at this step, the table name in that migration needs to be corrected. This `user_id` field is also used by the Order History page.
+- Future ideas: email notification after payment, QR scanner at stadium entrances, sales reports for admin.
+
+---
+
+## Developer
+
+Developed by **Izzat** as a Final Year Project (FYP).
+
+Built on [Laravel](https://laravel.com) (MIT license). The admin template uses [AdminLTE](https://adminlte.io).
