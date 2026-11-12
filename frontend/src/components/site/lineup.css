@@ -1,0 +1,280 @@
+/* ==========================================================================
+   Current lineup — vertical pitch with the starting XI
+   ========================================================================== */
+
+.lineup {
+  position: relative;
+  overflow-x: clip; /* nothing (e.g. a touchline tooltip) may widen the page on phones */
+  padding: clamp(80px, 12vh, 140px) clamp(20px, 4vw, 64px);
+  background:
+    radial-gradient(50% 40% at 80% 40%, rgba(255, 198, 41, 0.06), transparent 70%),
+    var(--nft-black);
+}
+.lineup__inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 520px);
+  gap: clamp(32px, 6vw, 96px);
+  align-items: center;
+}
+
+.lineup__intro { margin: 18px 0 0; max-width: 40ch; color: var(--nft-muted); font-size: 17px; line-height: 1.5; }
+
+.lineup__formation { display: grid; margin-top: clamp(32px, 6vh, 56px); }
+.lineup__formation-label { color: var(--nft-muted); font-size: 14px; }
+.lineup__formation-value {
+  display: flex;
+  overflow: hidden;
+  font: 800 clamp(72px, 10vw, 150px)/0.9 var(--font-barlow-condensed), sans-serif;
+  color: var(--nft-yellow);
+  font-variant-numeric: tabular-nums;
+}
+.lineup__formation-value > span { display: inline-block; }
+
+.lineup__meta { display: flex; flex-wrap: wrap; gap: 12px 40px; margin: 18px 0 0; }
+.lineup__meta dt { color: var(--nft-muted); font-size: 13px; margin-bottom: 4px; }
+.lineup__meta dd { margin: 0; font-size: 18px; font-weight: 600; }
+
+/* --- Substitutes (between the formation and "Updated") ------------------------ */
+
+.bench { min-width: 0; margin-top: clamp(24px, 4vh, 36px); max-width: 560px; }
+.bench__title {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 0 8px;
+  font: 700 22px/1 var(--font-barlow-condensed), sans-serif;
+  text-transform: uppercase;
+}
+.bench__count { color: var(--nft-muted); font: 500 14px/1 var(--font-barlow), sans-serif; }
+.bench ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 28px;
+}
+.bench li {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 10px;
+  padding: 8px 0;
+  border-top: 1px solid var(--nft-line);
+}
+.bench__code {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  height: 26px;
+  border-radius: 6px;
+  background: rgba(255, 198, 41, 0.14);
+  color: var(--nft-yellow);
+  font: 800 14px/1 var(--font-barlow-condensed), sans-serif;
+  letter-spacing: 0.03em;
+}
+.bench__code[data-line="GK"] { background: rgba(247, 247, 247, 0.12); color: var(--nft-white); }
+.bench__name { min-width: 0; font-size: 15px; font-weight: 600; line-height: 1.25; }
+.bench__name > * { margin-right: 6px; vertical-align: 1px; }
+.bench__captain { margin: 0 0 0 6px !important; }
+.bench__number { color: var(--nft-yellow); font: 800 16px/1 var(--font-barlow-condensed), sans-serif; }
+.bench__captain {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--nft-yellow);
+  color: var(--nft-black);
+  font: 800 10px/1 var(--font-barlow), sans-serif;
+}
+.bench__club { color: var(--nft-muted); font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* --- Pitch ------------------------------------------------------------------ */
+
+.pitch {
+  position: relative;
+  aspect-ratio: 68 / 105;
+  /* fit the whole pitch on screen below the navbar */
+  width: min(100%, calc((100svh - 150px) * 68 / 105));
+  justify-self: center;
+  border-radius: 22px;
+  overflow: visible;
+  background:
+    repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 0 7.69%, transparent 7.69% 15.38%),
+    linear-gradient(180deg, #102318, #0a160f);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06), 0 40px 90px -40px rgba(0, 0, 0, 0.9);
+}
+.pitch__svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.pitch__line {
+  fill: none;
+  stroke: rgba(247, 247, 247, 0.32);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+}
+.pitch__spot { fill: rgba(247, 247, 247, 0.45); }
+.pitch__skeleton { position: absolute; inset: 0; border-radius: 22px; opacity: 0.6; }
+.pitch--empty .pitch__svg { opacity: 0.6; }
+.pitch__empty {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(80%, 300px);
+  margin: 0;
+  padding: 16px 20px;
+  transform: translate(-50%, -50%);
+  border-radius: 14px;
+  background: rgba(8, 8, 8, 0.82);
+  backdrop-filter: blur(6px);
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.pitch__players { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; }
+
+/* --- Player node ------------------------------------------------------------- */
+
+.node {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.node__button {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  width: 110px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--nft-white);
+  cursor: default;
+  transform: translate(-50%, -28px);
+  transition: transform 0.3s var(--ease-out);
+}
+.node__glow {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  width: 96px;
+  height: 96px;
+  margin-left: -48px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 198, 41, 0.45), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.node__badge {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(40px, 4.4vw, 56px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--nft-yellow);
+  color: var(--nft-black);
+  box-shadow: 0 0 0 3px rgba(8, 8, 8, 0.8), 0 10px 24px -8px rgba(0, 0, 0, 0.9);
+}
+.node[data-line="GK"] .node__badge { background: #f7f7f7; }
+.node__number { font: 800 clamp(18px, 2vw, 24px)/1 var(--font-barlow-condensed), sans-serif; }
+.node__number--long { font-size: clamp(15px, 1.5vw, 18px); letter-spacing: 0.01em; }
+.node__photo { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+.node__chip {
+  position: absolute;
+  right: -6px;
+  bottom: -4px;
+  min-width: 22px;
+  padding: 3px 4px;
+  border-radius: 999px;
+  background: var(--nft-yellow);
+  color: var(--nft-black);
+  font: 800 12px/1 var(--font-barlow-condensed), sans-serif;
+}
+.node__captain {
+  position: absolute;
+  left: -6px;
+  top: -4px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--nft-black);
+  color: var(--nft-yellow);
+  box-shadow: inset 0 0 0 1.5px var(--nft-yellow);
+  font: 800 11px/1 var(--font-barlow-condensed), sans-serif;
+}
+.node__name {
+  max-width: 110px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(8, 8, 8, 0.72);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.node__tip {
+  position: absolute;
+  left: 0;
+  top: 46px;
+  z-index: 3;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: var(--nft-surface);
+  box-shadow: 0 0 0 1px var(--nft-line), 0 12px 30px -10px rgba(0, 0, 0, 0.9);
+  color: var(--nft-muted);
+  font-size: 12.5px;
+  white-space: nowrap;
+  transform: translate(var(--tip-x, -50%), 4px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, transform 0.25s var(--ease-out), visibility 0.2s;
+  pointer-events: none;
+}
+.node:hover { z-index: 2; }
+.node:hover .node__button,
+.node__button:focus-visible { transform: translate(-50%, -34px); }
+.node:hover .node__glow,
+.node__button:focus-visible .node__glow { opacity: 1; }
+.node:hover .node__tip,
+.node__button:focus-visible + .node__tip { opacity: 1; visibility: visible; transform: translate(var(--tip-x, -50%), 0); }
+/* players on the touchlines: keep their tooltip inside the pitch */
+.node[data-edge="start"] { --tip-x: -18%; }
+.node[data-edge="end"] { --tip-x: -82%; }
+.node__button:focus-visible { outline: none; }
+.node__button:focus-visible .node__badge { outline: 2px solid var(--nft-yellow); outline-offset: 4px; }
+
+/* --- Responsive -------------------------------------------------------------- */
+
+@media (max-width: 899px) {
+  /* single column: title → formation → pitch → bench */
+  .lineup__inner { grid-template-columns: 1fr; row-gap: 28px; }
+  .lineup__info { display: contents; }
+  .lineup__head { order: 1; }
+  .lineup__info .fixtures__message { order: 2; }
+  .lineup__formation { order: 2; margin-top: 0; }
+  .lineup__meta { order: 3; margin-top: 0; }
+  .pitch { order: 4; width: min(100%, 520px); }
+  .bench { order: 5; margin-top: 0; max-width: none; }
+}
+@media (max-width: 599px) {
+  .bench ul { grid-template-columns: 1fr; }
+  .node__button { width: 84px; }
+  .node__name { max-width: 84px; font-size: 11.5px; padding: 2px 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .node__button,
+  .node__glow,
+  .node__tip { transition: none; }
+}
