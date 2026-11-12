@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import FixturesSection from "@/components/site/FixturesSection";
 import HeroSection from "@/components/site/HeroSection";
+import KeyboardReveal from "@/components/site/KeyboardReveal";
+import SmoothScroll from "@/components/site/SmoothScroll";
 import LineupSection from "@/components/site/LineupSection";
 import VenueSection from "@/components/site/VenueSection";
 import Navbar from "@/components/site/Navbar";
@@ -19,6 +21,8 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <div className="site">
+      <SmoothScroll />
+      <KeyboardReveal />
       <Navbar />
       <main>
         <HeroSection />
