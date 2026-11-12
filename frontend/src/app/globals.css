@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+/* NFT design tokens — "Beyond the game" */
+:root {
+  --nft-black: #080808;
+  --nft-surface: #111111;
+  --nft-yellow: #ffc629;
+  --nft-white: #f7f7f7;
+  --nft-muted: #a3a3a3;
+  /* Deep blue from the Away kit (secondary accent) */
+  --nft-blue: #12306e;
+  --nft-blue-bright: #4a86ff;
+  --nft-line: rgba(247, 247, 247, 0.12);
+
+  --ease-io: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --background: var(--nft-black);
+  --foreground: var(--nft-white);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-nft-black: var(--nft-black);
+  --color-nft-surface: var(--nft-surface);
+  --color-nft-yellow: var(--nft-yellow);
+  --color-nft-white: var(--nft-white);
+  --color-nft-muted: var(--nft-muted);
+  --font-sans: var(--font-barlow);
+  --font-display: var(--font-barlow-condensed);
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-barlow), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
