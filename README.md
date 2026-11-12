@@ -49,7 +49,7 @@ National team match tickets are often sold at counters or through systems that d
 | Ultras Malaya | RM30 | B (Level 1) |
 | Away | RM30 | E (Level 3) |
 
-The gate → category → level → section mapping is defined in the `gateTypeMap` object in [resources/views/customer/create.blade.php](resources/views/customer/create.blade.php).
+The gate → category → level → section mapping is defined in the `gateTypeMap` object in [resources/views/customer/create.blade.php](backend/resources/views/customer/create.blade.php).
 
 ---
 
@@ -66,7 +66,7 @@ Admin
                           └─► User List
 ```
 
-After login, users are redirected by role (`admin` → `/admin/dashboard`, `customer` → `/customer/dashboard`). Access to each route is enforced by the `check.role` middleware ([app/Http/Middleware/CheckRole.php](app/Http/Middleware/CheckRole.php)).
+After login, users are redirected by role (`admin` → `/admin/dashboard`, `customer` → `/customer/dashboard`). Access to each route is enforced by the `check.role` middleware ([app/Http/Middleware/CheckRole.php](backend/app/Http/Middleware/CheckRole.php)).
 
 ---
 
@@ -76,8 +76,8 @@ After login, users are redirected by role (`admin` → `/admin/dashboard`, `cust
 |---|---|
 | Backend | PHP 8.1+, Laravel 10, Laravel UI (auth) |
 | Database | MySQL |
-| Customer Frontend | Blade, Bootstrap, *NationalFootballTicket* template ([public/NationalFootballTicket/](public/NationalFootballTicket/)) |
-| Admin Frontend | Blade, AdminLTE 3 ([public/admin/](public/admin/)), Chart.js |
+| Customer Frontend | Blade, Bootstrap, *NationalFootballTicket* template ([public/NationalFootballTicket/](backend/public/NationalFootballTicket/)) |
+| Admin Frontend | Blade, AdminLTE 3 ([public/admin/](backend/public/admin/)), Chart.js |
 | Stadium Map | Interactive SVG + JavaScript |
 | E-Ticket | QR Server API (QR code), jsPDF (PDF download) |
 | Build tool | Vite |
@@ -103,6 +103,17 @@ users ──┬──< bookticket >── footballmatches ──< tickets
 ---
 
 ## Project Structure (key files)
+
+The repository is split into two parts:
+
+```
+smart-ticket-system-fyp/
+├── backend/     # Laravel 10 app (API, database, Blade pages, admin panel)
+├── frontend/    # Next.js app (new customer UI, talks to backend at http://127.0.0.1:8000)
+└── README.md
+```
+
+Inside `backend/`:
 
 ```
 app/
@@ -141,7 +152,7 @@ routes/web.php                      # All web routes
 ```bash
 # 1. Clone the repository
 git clone <repo-url> smart-ticket-system-fyp
-cd smart-ticket-system-fyp
+cd smart-ticket-system-fyp/backend
 
 # 2. Install dependencies
 composer install
@@ -152,7 +163,7 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-Update the database settings in `.env`:
+Update the database settings in `backend/.env`:
 
 ```env
 DB_DATABASE=smart_ticket
@@ -170,6 +181,14 @@ php artisan serve    # terminal 2
 ```
 
 Open `http://localhost:8000` in your browser.
+
+To run the new Next.js frontend as well:
+
+```bash
+cd smart-ticket-system-fyp/frontend
+npm install
+npm run dev          # terminal 3, opens on http://localhost:3000
+```
 
 ### Sample Accounts (from seeder)
 | Role | Email | Password |
