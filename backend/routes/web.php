@@ -44,6 +44,13 @@ Route::middleware(['auth', 'check.role:admin'])->group(function () {
     Route::get('/matches/{match}/tickets/show', [TicketController::class, 'show'])->name('tickets.show');
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
+
+    // Squad & starting XI for the landing page lineup (not under /admin: that path collides
+    // with public/admin/ when using `php artisan serve`).
+    Route::resource('squad', PlayerController::class)
+        ->parameters(['squad' => 'player'])
+        ->names('players')
+        ->except('show');
 });
 
 Route::middleware(['auth', 'check.role:customer'])->group(function () {

@@ -214,6 +214,13 @@
               </a>
             </li>
 
+            <li class="nav-item">
+              <a href="{{route('players.index')}}" class="nav-link">
+                <i class="fas fa-users nav-icon"></i>
+                <p>Squad &amp; Lineup</p>
+              </a>
+            </li>
+
             {{-- <li class="nav-item">
               <a href="" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>

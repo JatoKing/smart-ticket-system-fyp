@@ -20,4 +20,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Public, read-only fixture list for the Next.js landing page.
 Route::get('/fixtures', [\App\Http\Controllers\Api\FixtureController::class, 'index'])->name('api.fixtures');
+Route::get('/lineup', [\App\Http\Controllers\Api\LineupController::class, 'index'])->name('api.lineup');
 Route::get('/stadium', [\App\Http\Controllers\Api\StadiumController::class, 'index'])->name('api.stadium');
