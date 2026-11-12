@@ -43,6 +43,7 @@ class PaymentController extends Controller
 
     // Store the payment details (adjust as needed)
     $payment = new Payment();
+    $payment->user_id = auth()->id();
     $payment->fname = $paymentData['fullname'];
     $payment->identification = $paymentData['identification'];
     $payment->bookticket_id = $paymentData['ticket_id'];
