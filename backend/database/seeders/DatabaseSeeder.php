@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         // ]);
         $this->call(UserSeeder::class);
         $this->call(MatchSeeder::class);
+        $this->call(PlayerSeeder::class);
         // $this->call(BookTicketSeeder::class);
     }
 }
