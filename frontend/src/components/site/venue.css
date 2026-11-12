@@ -1,0 +1,222 @@
+/* ==========================================================================
+   Venue — Stadium Bukit Jalil, one section: venue intro → seat map
+   ========================================================================== */
+
+.venue {
+  position: relative;
+  background:
+    radial-gradient(50% 50% at 75% 50%, rgba(18, 48, 110, 0.3), transparent 70%),
+    var(--nft-black);
+}
+
+/* the stage is what gets pinned on desktop */
+.venue__stage {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  align-items: center;
+  padding: clamp(88px, 11vh, 120px) clamp(20px, 4vw, 64px) clamp(28px, 5vh, 56px);
+}
+.venue__inner {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: center;
+}
+
+/* --- Left column ----------------------------------------------------------- */
+
+.venue__place { margin: 0 0 16px; color: var(--nft-yellow); font-size: 15px; font-weight: 600; }
+.venue__title { font-size: clamp(48px, 6vw, 104px); }
+
+/* details and seat guide share one slot and cross-fade during the sequence */
+.venue__swap { display: grid; margin-top: clamp(18px, 3vh, 28px); }
+.venue__details,
+.venue__guide { grid-area: 1 / 1; }
+.venue__guide { visibility: hidden; opacity: 0; }
+.venue.is-static .venue__guide { visibility: visible; opacity: 1; grid-area: auto; margin-top: 32px; }
+.venue.is-static .venue__swap { grid-template-rows: auto auto; }
+
+.venue__desc { margin: 0; max-width: 46ch; color: rgba(247, 247, 247, 0.8); font-size: clamp(16px, 1.2vw, 18px); line-height: 1.6; }
+
+.venue__facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 clamp(20px, 3vw, 40px);
+  margin: clamp(22px, 4vh, 40px) 0 0;
+}
+.venue__fact { position: relative; padding: 16px 0 18px; }
+.venue__fact-rule { position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--nft-line); }
+.venue__fact dt { color: var(--nft-muted); font-size: 13px; margin-bottom: 6px; }
+.venue__fact dd { margin: 0; display: grid; gap: 4px; }
+.venue__fact-value { font: 800 clamp(30px, 3vw, 44px)/0.95 var(--font-barlow-condensed), sans-serif; }
+.venue__fact-note { color: var(--nft-muted); font-size: 14px; line-height: 1.4; }
+
+.venue__actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.venue__actions button { border: 0; cursor: pointer; }
+
+/* --- Right column: the frame (photo → seat map) ---------------------------- */
+
+.venue__frame {
+  position: relative;
+  margin: 0;
+  justify-self: end;
+  width: min(100%, calc(100svh - 170px));
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 28px;
+  clip-path: inset(0% 0% 0% 0% round 28px);
+  background: #0b0d10;
+  box-shadow: 0 50px 110px -40px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+.venue__photo-wrap { position: absolute; inset: 0; }
+.venue__photo { width: 100%; height: 100%; object-fit: cover; will-change: transform; }
+
+/* darkens the city around the bowl as the camera dives in */
+.venue__focus {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(42% 40% at 50% 50%, transparent 55%, rgba(8, 8, 8, 0.92) 100%);
+}
+
+.venue__frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(8, 8, 8, 0.35), transparent 26%, transparent 70%, rgba(8, 8, 8, 0.75));
+}
+
+/* the seat map sits in the same frame, revealed by the scroll sequence */
+.venue__map {
+  position: absolute;
+  inset: 4%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  visibility: hidden;
+}
+.venue.is-static .venue__map { opacity: 1; visibility: visible; }
+.venue.is-static .venue__photo-wrap { opacity: 0.12; }
+.venue.is-static .venue__pin,
+.venue.is-static .venue__caption { display: none; }
+
+/* location pin over the roof opening */
+.venue__pin {
+  position: absolute;
+  left: 50.5%;
+  top: 47.6%;
+  z-index: 3;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+}
+.venue__pin-dot {
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--nft-yellow);
+  box-shadow: 0 0 0 3px rgba(8, 8, 8, 0.6);
+}
+.venue__pin::before,
+.venue__pin::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--nft-yellow);
+  animation: venue-pulse 2.4s var(--ease-out) infinite;
+}
+.venue__pin::after { animation-delay: 1.2s; }
+
+.venue__caption {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 22px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font: 700 clamp(20px, 2vw, 26px)/1 var(--font-barlow-condensed), sans-serif;
+  text-transform: uppercase;
+}
+.venue__coords { color: var(--nft-muted); font: 500 13px/1 var(--font-barlow), sans-serif; text-transform: none; }
+
+@keyframes venue-pulse {
+  from { transform: scale(1); opacity: 0.9; }
+  to { transform: scale(3.2); opacity: 0; }
+}
+
+/* short desktop screens */
+@media (min-width: 768px) and (max-height: 820px) {
+  .venue__fact { padding: 12px 0 14px; }
+  .venue__fact-note { display: none; }
+  .venue__desc { font-size: 15px; }
+}
+
+/* tablet */
+@media (min-width: 768px) and (max-width: 1099px) {
+  .venue__inner { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: 28px; }
+  .venue__fact-note { display: none; }
+}
+
+/* phones: stacked; only the frame pins (copy → frame → guide) */
+@media (max-width: 767px) {
+  .venue__stage { padding: 72px 16px 56px; }
+  .venue__inner { grid-template-columns: 1fr; gap: 24px; }
+  .venue__copy,
+  .venue__swap { display: contents; }
+  .venue__place { order: 1; margin-bottom: -8px; }
+  .venue__title { order: 2; }
+  .venue__details,
+  .venue__guide { grid-area: auto; } /* no cross-fade slot on phones: they stack */
+  .venue__details { order: 3; }
+  .venue__frame { order: 4; width: 100%; justify-self: stretch; }
+  .venue__guide { order: 5; visibility: visible; opacity: 1; }
+  .venue__facts { grid-template-columns: 1fr 1fr; }
+  .venue__fact-note { font-size: 13px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .venue__pin::before,
+  .venue__pin::after { animation: none; }
+}
+
+/* compact seat guide inside the pinned section (must fit under the title on one screen) */
+@media (min-width: 768px) {
+  .venue .seatmap__panel { gap: 10px; }
+  .venue .seatmap__legend { grid-template-columns: 1fr 1fr; column-gap: 8px; }
+  .venue .seatmap__legend button { padding: 7px 10px; font-size: 14px; }
+  .venue .seatmap__gates button { height: 38px; }
+  /* fixed height so picking a gate never grows the pinned stage; long gate lists scroll
+     inside (the wheel passes on to the page once the list reaches its end) */
+  .venue .seatmap__info {
+    height: clamp(118px, 21vh, 176px);
+    min-height: 0;
+    padding: 12px 16px;
+    overflow-y: auto;
+    overscroll-behavior-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(247, 247, 247, 0.35) transparent;
+    /* scroll shadows: a soft edge shows up only where there is more to scroll */
+    background:
+      linear-gradient(var(--nft-surface) 40%, transparent) top / 100% 28px no-repeat local,
+      linear-gradient(transparent, var(--nft-surface) 60%) bottom / 100% 28px no-repeat local,
+      radial-gradient(farthest-side at 50% 0, rgba(247, 247, 247, 0.16), transparent) top / 100% 12px no-repeat scroll,
+      radial-gradient(farthest-side at 50% 100%, rgba(247, 247, 247, 0.16), transparent) bottom / 100% 12px no-repeat scroll,
+      var(--nft-surface);
+  }
+  .venue .seatmap__info-title { font-size: 22px; }
+  .venue .seatmap__gate-list { grid-template-columns: 1fr 1fr; gap: 8px 16px; }
+}
+@media (min-width: 768px) and (max-height: 820px) {
+  .venue .seatmap__panel-title { display: none; }
+}

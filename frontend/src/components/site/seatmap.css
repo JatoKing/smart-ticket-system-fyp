@@ -1,0 +1,162 @@
+/* ==========================================================================
+   Seat map — aerial photo → interactive Bukit Jalil seating plan
+   ========================================================================== */
+
+.venue,
+.seatmap {
+  --cat-premium: #e5484d;
+  --cat-grandstand: #ffc629;
+  --cat-ultras: #22c7a0;
+  --cat-away: #4a86ff;
+  --cat-home: #3a3e47;
+}
+
+.seatmap__svg { width: 100%; height: 100%; overflow: visible; }
+
+/* --- SVG: outlines, pitch, sections, gates ------------------------------------- */
+
+.seatmap__outline {
+  fill: none;
+  stroke: rgba(247, 247, 247, 0.2);
+  stroke-width: 1;
+  stroke-dasharray: 1;
+  vector-effect: non-scaling-stroke;
+}
+.pitch-fill { fill: #0f2a19; }
+.pitch-lines * { fill: none; stroke: rgba(255, 255, 255, 0.4); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+
+/* GSAP animates the opacity of .sec itself — never put a CSS transition on that property
+   (a running transition makes GSAP read the wrong end value). Dimming uses the children. */
+.sec { cursor: pointer; }
+.sec > * { transition: opacity 0.25s ease; }
+.sec path {
+  fill: #24272d;
+  stroke: #080808;
+  stroke-width: 1.5;
+  transition: fill 0.6s ease, stroke 0.15s ease, opacity 0.25s ease;
+}
+.sec text {
+  fill: rgba(247, 247, 247, 0.6);
+  font: 600 10.5px/1 var(--font-barlow), sans-serif;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  transition: fill 0.6s ease, opacity 0.25s ease;
+}
+.sec text.is-split { font-size: 8px; }
+
+.is-zoned .sec[data-cat="Premium"] path { fill: var(--cat-premium); }
+.is-zoned .sec[data-cat="Grandstand"] path { fill: var(--cat-grandstand); }
+.is-zoned .sec[data-cat="UltrasMalaya"] path { fill: var(--cat-ultras); }
+.is-zoned .sec[data-cat="Away"] path { fill: var(--cat-away); }
+.is-zoned .sec[data-cat="Home"] path { fill: var(--cat-home); }
+.is-zoned .sec[data-cat="Grandstand"] text,
+.is-zoned .sec[data-cat="UltrasMalaya"] text { fill: rgba(8, 8, 8, 0.8); }
+.is-zoned .sec[data-cat="Premium"] text,
+.is-zoned .sec[data-cat="Away"] text { fill: #fff; }
+
+.sec:hover path,
+.sec.is-active path { stroke: #fff; stroke-width: 2.5; }
+.sec:hover > *,
+.sec.is-active > * { opacity: 1 !important; }
+
+/* focus a category or a gate: dim everything else */
+.seatmap__svg[data-focus-cat="Premium"] .sec:not([data-cat="Premium"]) > *,
+.seatmap__svg[data-focus-cat="Grandstand"] .sec:not([data-cat="Grandstand"]) > *,
+.seatmap__svg[data-focus-cat="Home"] .sec:not([data-cat="Home"]) > *,
+.seatmap__svg[data-focus-cat="UltrasMalaya"] .sec:not([data-cat="UltrasMalaya"]) > *,
+.seatmap__svg[data-focus-cat="Away"] .sec:not([data-cat="Away"]) > *,
+.seatmap__svg[data-focus-gate="A"] .sec:not([data-gate="A"]) > *,
+.seatmap__svg[data-focus-gate="B"] .sec:not([data-gate="B"]) > *,
+.seatmap__svg[data-focus-gate="C"] .sec:not([data-gate="C"]) > *,
+.seatmap__svg[data-focus-gate="D"] .sec:not([data-gate="D"]) > *,
+.seatmap__svg[data-focus-gate="E"] .sec:not([data-gate="E"]) > * { opacity: 0.16; }
+
+.seatmap__gate {
+  fill: var(--nft-white);
+  font: 800 22px/1 var(--font-barlow-condensed), sans-serif;
+  text-transform: uppercase;
+  text-anchor: middle;
+  dominant-baseline: central;
+  transition: fill 0.2s ease;
+}
+.seatmap__gate.is-focus { fill: var(--nft-yellow); }
+.seatmap__gate--vip { fill: var(--nft-muted); font-size: 18px; }
+
+/* --- Guide panel ------------------------------------------------------------------ */
+
+.seatmap__panel { display: grid; gap: 12px; }
+.seatmap__panel-title { margin: 6px 0 0; font: 700 20px/1 var(--font-barlow-condensed), sans-serif; text-transform: uppercase; }
+
+.seatmap__legend { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; }
+.seatmap__legend button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: none;
+  color: var(--nft-white);
+  font: 500 15px/1.2 var(--font-barlow), sans-serif;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.seatmap__legend button:hover { background: rgba(247, 247, 247, 0.05); }
+.seatmap__legend button[aria-pressed="true"] { border-color: var(--nft-line); background: rgba(247, 247, 247, 0.07); }
+.swatch { width: 14px; height: 14px; border-radius: 4px; }
+[data-cat="Premium"] > .swatch { background: var(--cat-premium); }
+[data-cat="Grandstand"] > .swatch { background: var(--cat-grandstand); }
+[data-cat="UltrasMalaya"] > .swatch { background: var(--cat-ultras); }
+[data-cat="Away"] > .swatch { background: var(--cat-away); }
+[data-cat="Home"] > .swatch { background: var(--cat-home); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2); }
+.seatmap__legend-price { color: var(--nft-muted); font-size: 14px; font-variant-numeric: tabular-nums; }
+
+.seatmap__gates { display: flex; gap: 6px; }
+.seatmap__gates button {
+  flex: 1;
+  height: 42px;
+  border: 1px solid var(--nft-line);
+  border-radius: 10px;
+  background: none;
+  color: var(--nft-white);
+  font: 800 18px/1 var(--font-barlow-condensed), sans-serif;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.seatmap__gates button:hover { border-color: rgba(247, 247, 247, 0.4); }
+.seatmap__gates button[aria-pressed="true"] { background: var(--nft-yellow); border-color: var(--nft-yellow); color: var(--nft-black); }
+
+.seatmap__info {
+  min-height: 132px;
+  padding: 16px 18px;
+  border: 1px solid var(--nft-line);
+  border-radius: 14px;
+  background: var(--nft-surface);
+}
+.seatmap__info p { margin: 0; }
+.seatmap__info-title { font: 800 26px/1 var(--font-barlow-condensed), sans-serif; text-transform: uppercase; margin-bottom: 8px !important; }
+.seatmap__info-price { margin-top: 8px !important; color: var(--nft-yellow); font-weight: 600; }
+.seatmap__info-hint { color: var(--nft-muted); font-size: 15px; line-height: 1.5; }
+.seatmap__gate-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 14px; }
+.seatmap__gate-list li { display: grid; gap: 2px; }
+.seatmap__gate-sections { color: var(--nft-muted); font-size: 13px; }
+.seatmap__book { justify-self: start; }
+
+/* --- Responsive -------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  .sec text { font-size: 12px; }
+  .seatmap__gate { font-size: 28px; }
+  /* the tapped section's details sit at the top of the guide */
+  .seatmap__info { order: -1; min-height: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sec,
+  .sec path,
+  .sec text { transition: none; }
+}
