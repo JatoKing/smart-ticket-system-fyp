@@ -62,6 +62,15 @@ Route::middleware(['auth', 'check.role:customer'])->group(function () {
 
 Route::get('/order-history', [OrderHistoryController::class, 'index'])->name('order.history');
 
+// Read-only session status for the Next.js frontend (navbar login state). Changes nothing.
+Route::get('/auth/session', function () {
+    $user = Auth::user();
+
+    return response()->json([
+        'user' => $user ? $user->only(['id', 'name', 'email', 'role']) : null,
+    ]);
+})->name('auth.session');
+
 
 
 
